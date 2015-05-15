@@ -1,27 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Faker
 {
-	public static class NumberFaker
-	{
-		private static Random _random = new Random();
+    public static class NumberFaker
+    {
+        private static readonly RNGCryptoServiceProvider Global = new RNGCryptoServiceProvider();
 
-		public static int Number()
-		{
-			return _random.Next();
-		}
+        [ThreadStatic]
+        private static Random _local;
 
-		public static int Number(int maxValue)
-		{
-			return _random.Next(maxValue);
-		}
+        private static Random Local
+        {
+            get
+            {
+                Random inst = _local;
+                if (inst == null)
+                {
+                    byte[] buffer = new byte[4];
+                    Global.GetBytes(buffer);
+                    _local = inst = new Random(
+                        BitConverter.ToInt32(buffer, 0));
+                }
 
-		public static int Number(int minValue, int maxValue)
-		{
-			return _random.Next(minValue, maxValue);
-		}
-	}
+                return inst;
+            }
+        }
+
+        public static int Number()
+        {
+            return Local.Next();
+        }
+
+        public static int Number(int maxValue)
+        {
+            return Local.Next(maxValue);
+        }
+
+        public static int Number(int minValue, int maxValue)
+        {
+            return Local.Next(minValue, maxValue);
+        }
+    }
 }
