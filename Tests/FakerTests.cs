@@ -118,16 +118,18 @@ namespace FakerTests
 			});
 		}
 
-		[Test]
-		public void PhoneFakerTest()
-		{
-			DisplayAndExecute(new Expression<Func<string>>[] {
-				() => PhoneFaker.Phone(),
-				() => PhoneFaker.InternationalPhone(),
-			});
-		}
-		
-		[Test]
+        [Test]
+        public void PhoneFakerTest()
+        {
+            DisplayAndExecute(new Expression<Func<string>>[] {
+                () => PhoneFaker.Phone(),
+                () => PhoneFaker.Phone("07#########"),
+                () => PhoneFaker.Phone("0208#######"),
+                () => PhoneFaker.InternationalPhone(),
+            });
+        }
+
+        [Test]
 		public void StringFakerTest()
 		{
 			DisplayAndExecute(new Expression<Func<string>>[] {
